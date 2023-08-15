@@ -4,6 +4,7 @@ import { EventEmitter } from "events";
 import Experience from '../Experience';
 import Environment from '../Scene/Environement';
 import AudioVisualizer from "../Sketches/AudioVisualizer/AudioVisualizer";
+import ShaderMaterials from '../Sketches/shaderMaterials/ShaderMaterials';
 import Objects from './Objects';
 
 export default class World extends EventEmitter {
@@ -23,20 +24,21 @@ export default class World extends EventEmitter {
         this.resources.on("ready", ()=> {
             this.environment = new Environment();
 
-            // Cube Object
-            this.cube = new Objects();
-            this.cube.addMeshObject(
-                new THREE.BoxGeometry( 1.5, 1.5, 1.5 ),
-                new THREE.MeshBasicMaterial( {
-                    color: 0x00ff00, 
-                    wireframe: false 
-                }),
-            )
-            this.cube.object.rotation.x = -.3
-            this.cube.object.rotation.y = 1
-            this.cube.addObjectDebug('cube')
-            
-            this.audioVisualizer.setThreeAudioVisualizer(this.cube.object)
+            /* ---------------------------------------------------------
+                                Audio Object
+             ---------------------------------------------------------*/
+             this.shaderClass = new ShaderMaterials();
+             this.sphereGeo =  new THREE.SphereGeometry(1, 100, 100);
+             this.audioMaterial = this.shaderClass.createAudioMaterial();
+             
+             this.sphere = new Objects();
+             this.sphere.addMeshObject(
+                 this.sphereGeo,
+                 this.audioMaterial
+             )  
+            this.sphere.addObjectDebug('sphere')        
+
+            this.audioVisualizer.setThreeAudioVisualizer(this.sphere.object, 'uAudioFrequency')
         
      
             this.emit("worldready");
@@ -52,6 +54,9 @@ export default class World extends EventEmitter {
 
     //UPDATE
     update() {
-        
+        if(this.shaderClass) this.shaderClass.update();
+
+        if(this.audioVisualizer.analyser)this.audioVisualizer.update();
+
     }
 }

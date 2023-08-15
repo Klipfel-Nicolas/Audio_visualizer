@@ -10,6 +10,7 @@ export default class AudioVisualizer  {
 
         this.trackList = trackList;
         this.sound = {};
+        this.isPlaying = false;
 
         //Page events
         this.page = this.experience.page;
@@ -48,21 +49,30 @@ export default class AudioVisualizer  {
         })
     }
 
-    
-    /**
-     * getFrenquency function
-     */
-    getFrequency() {
-        return this.analyser.getAverageFrequency()
-    }
 
     /**
      * Three audio visualizer
      * @param {THREE.Mesh} mesh 
      */
-    setThreeAudioVisualizer(mesh) {
+    setThreeAudioVisualizer(mesh, frequencyUniformName) {
+        this.mesh = mesh
         this.createThreeAudioAnalyser(mesh);
-        this.loadThreeAudio(this.trackList[0])
+        this.loadThreeAudio(this.trackList[0]);
+
+        // Set uniforms
+        this.frequencyUniformName = frequencyUniformName;
+        this.mesh.material.uniforms[this.frequencyUniformName] = {value: 0}; 
+        
+    }
+
+    /* ---------------------------------
+            Utils functions
+    --------------------------------- */
+    /**
+     * getFrenquency function
+     */
+    getFrequency() {
+        return this.analyser.getAverageFrequency()
     }
 
     /* ----------------------------------------------------------------
@@ -71,12 +81,15 @@ export default class AudioVisualizer  {
     handleAudioController() {
         this.page.on("audio-play", () => {
             this.sound.play();
+            this.isPlaying = true;
         })
         this.page.on("audio-pause", () => {
             this.sound.pause();
+            this.isPlaying = false;
         })
         this.page.on("audio-stop", () => {
             this.sound.stop();
+            this.isPlaying = false;
         })
     }
 
@@ -93,7 +106,12 @@ export default class AudioVisualizer  {
     destroy() {}
 
     update() {
-    
+        if(this.getFrequency()) {
+            this.freq = Math.max(this.getFrequency() - 100, 0) / 50;
+            this.mesh.material.uniforms[this.frequencyUniformName].value = this.freq;
+
+            return this.freq;
+        } 
     }
 
     
