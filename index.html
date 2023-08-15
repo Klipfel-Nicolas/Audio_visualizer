@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <Link rel ="stylesheet" href="./style.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Experience</title>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Loader -->
+      <div class="loader">loader</div>
+
+      <!-- Application -->
+      <div id="audio-player">
+        
+        <!-- Buttons audio-actions -->
+        <div id="audio-actions" class="btn-actions">
+          <button 
+            data-event="audio-stop"
+            class="btn-actions__stop click-element" 
+            title="stop"
+          >
+            <img src="/images/icons/stop.png" alt="stop"  />
+          </button>
+
+          <button
+            data-event="audio-pause"
+            class="btn-actions__pause click-element" 
+            title="pause"
+          >
+            <img src="/images/icons/pause.png" alt="pause"  />
+          </button>
+
+          <button 
+            data-event="audio-play"
+            class="btn-actions__play click-element"
+            title="play"
+          >
+            <img src="/images/icons/play.png" alt="play"  />
+          </button>
+        </div>
+      </div>
+
+      <!-- Experience -->
+      <canvas class="webgl"></canvas>
+
+    </div>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
